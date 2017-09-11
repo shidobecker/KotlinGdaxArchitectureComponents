@@ -38,7 +38,7 @@ class GdaxWebSocket {
                 val type = JSON["type"].toString()
                 when (type) {
                     "open" -> {
-                        buildAndInsertOpenOrder(JSON)
+                       // buildAndInsertOpenOrder(JSON)
                     }
                 }
             }
