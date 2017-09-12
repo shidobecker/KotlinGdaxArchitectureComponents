@@ -81,6 +81,8 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:1.0.0-alpha9"
     testCompile "android.arch.persistence.room:testing:1.0.0-alpha9"
 
+    compile 'com.google.code.gson:gson:2.8.1'
 
 
+    implementation 'com.android.support:recyclerview-v7:26.0.2'
 }

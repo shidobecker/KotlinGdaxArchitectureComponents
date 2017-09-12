@@ -1,31 +1,34 @@
 package com.karchitecture.shido.karchitecture
 
+import com.google.gson.GsonBuilder
 import com.karchitecture.shido.karchitecture.datas.model.*
 import org.json.JSONObject
+import kotlin.concurrent.thread
 
 /**
  * Created by mira on 11/09/2017.
  */
 class MessageParser(val db: AppDatabase) {
+    val gson = GsonBuilder().serializeNulls().create()
 
     fun readMessage(message: String) {
         val JSON = JSONObject(message)
         val type = JSON["type"].toString()
         val resultOrder = when (type) {
             "open" -> {
-                buildAndInsertOpenOrder(JSON)
+                buildAndInsertOpenOrder(message)
             }
             "change" -> {
-                buildAndInsertChangeOrder(JSON)
+                buildAndInsertChangeOrder(message)
             }
             "received" -> {
-                buildAndInsertReceivedOrder(JSON)
+                buildAndInsertReceivedOrder(message)
             }
             "match" -> {
-                buildAndInsertMatchOrder(JSON)
+                buildAndInsertMatchOrder(message)
             }
             "done" -> {
-                buildAndInsertDoneOrder(JSON)
+                buildAndInsertDoneOrder(message)
             }
             else -> null
         }
@@ -33,70 +36,43 @@ class MessageParser(val db: AppDatabase) {
 
     }
 
-    fun buildAndInsertOpenOrder(JSON: JSONObject): OpenOrder {
-        val type = JSON["type"].toString()
-        val sequence = JSON["sequence"] as Int
-        val side = JSON["side"].toString()
-        val price = JSON["price"].toString()
-        val order_id = JSON["order_id"].toString()
-        val remainingTime = JSON["remaining_size"].toString()
-        val time = JSON["time"].toString()
-        val openOrder = OpenOrder(sequence, type, time, remainingTime, side, order_id, price)
+    fun buildAndInsertOpenOrder(message: String): OpenOrder {
+        val openOrder = gson.fromJson(message, OpenOrder::class.java)
+        thread {
         db.openOrderDao().insert(openOrder)
+        }
         return openOrder
     }
 
-    fun buildAndInsertReceivedOrder(JSON: JSONObject): ReceivedOrder {
-        val type = JSON["type"].toString()
-        val sequence = JSON["sequence"] as Int
-        val side = JSON["side"].toString()
-        val price = JSON["price"].toString()
-        val order_id = JSON["order_id"].toString()
-        val remainingTime = JSON["remaining_size"].toString()
-        val time = JSON["time"].toString()
-        return ReceivedOrder(sequence, type, time, remainingTime, side, order_id, price)
+    fun buildAndInsertReceivedOrder(text: String): ReceivedOrder {
+        val receivedOrder = gson.fromJson(text, ReceivedOrder::class.java)
+        thread {
+            db.receivedOrderDao().insert(receivedOrder)
+        }
+        return receivedOrder
     }
 
-    fun buildAndInsertMatchOrder(JSON: JSONObject): MatchOrder {
-        val type = JSON["type"].toString()
-        val sequence = JSON["sequence"] as Int
-        val side = JSON["side"].toString()
-        val price = JSON["price"].toString()
-        val makerOrderId = JSON["maker_order_id"].toString()
-        val takerOrderId = JSON["taker_order_id"].toString()
-        val tradeId = JSON["trade_id"] as Int
-        val size = JSON["size"].toString()
-        val time = JSON["time"].toString()
-        val matchOrder = MatchOrder(sequence, type, tradeId, time, side, price, makerOrderId, takerOrderId, size)
+    fun buildAndInsertMatchOrder(message: String): MatchOrder {
+        val matchOrder = gson.fromJson(message, MatchOrder::class.java)
+        thread {
         db.matchOrderDao().insert(matchOrder)
+        }
         return matchOrder
     }
 
-    fun buildAndInsertDoneOrder(JSON: JSONObject): DoneOrder {
-        val type = JSON["type"].toString()
-        val sequence = JSON["sequence"] as Int
-        val side = JSON["side"].toString()
-        val price = JSON["price"].toString()
-        val order_id = JSON["order_id"].toString()
-        val remainingSize = JSON["remaining_size"].toString()
-        val time = JSON["time"].toString()
-        val reason = JSON["reason"].toString()
-        val doneOrder = DoneOrder(sequence, type, time, order_id, side, price, reason, remainingSize)
-        db.doneOrderDao().insert(doneOrder)
+    fun buildAndInsertDoneOrder(message: String): DoneOrder {
+        val doneOrder = gson.fromJson(message, DoneOrder::class.java)
+        thread {
+            db.doneOrderDao().insert(doneOrder)
+        }
         return doneOrder
     }
 
-    fun buildAndInsertChangeOrder(JSON: JSONObject): ChangeOrder {
-        val type = JSON["type"].toString()
-        val sequence = JSON["sequence"] as Int
-        val side = JSON["side"].toString()
-        val price = JSON["price"].toString()
-        val newSize = JSON["new_size"].toString()
-        val oldSize = JSON["old_size"].toString()
-        val order_id = JSON["order_id"].toString()
-        val time = JSON["time"].toString()
-        val changeOrder = ChangeOrder(sequence, type, time, side, newSize, oldSize, price, order_id)
+    fun buildAndInsertChangeOrder(message: String): ChangeOrder {
+        val changeOrder = gson.fromJson(message, ChangeOrder::class.java)
+        thread {
         db.changeOrderDao().insert(changeOrder)
+        }
         return changeOrder
     }
 

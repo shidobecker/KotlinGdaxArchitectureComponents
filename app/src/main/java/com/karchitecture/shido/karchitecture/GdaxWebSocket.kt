@@ -3,17 +3,18 @@ package com.karchitecture.shido.karchitecture
 import com.karchitecture.shido.karchitecture.extensions.e
 import okhttp3.*
 import okio.ByteString
-import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 /**
  * Created by mira on 11/09/2017.
  */
-class GdaxWebSocket {
+class GdaxWebSocket (val db: AppDatabase) {
     lateinit var webSocket: WebSocket
     lateinit var client: OkHttpClient
     lateinit var request: Request
     lateinit var listener: WebSocketListener
+
+    val messageParser = MessageParser(db)
 
     fun buildWebSocket() {
         client = OkHttpClient.Builder()
@@ -34,13 +35,7 @@ class GdaxWebSocket {
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 e("MESSAGE1: " + text)
-                val JSON = JSONObject(text)
-                val type = JSON["type"].toString()
-                when (type) {
-                    "open" -> {
-                       // buildAndInsertOpenOrder(JSON)
-                    }
-                }
+                messageParser.readMessage(text)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
