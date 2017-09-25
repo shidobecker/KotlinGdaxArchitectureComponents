@@ -34,7 +34,7 @@ class GdaxWebSocket (val db: AppDatabase) {
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                e("MESSAGE1: " + text)
+               e("MESSAGE1: " + text)
                 messageParser.readMessage(text)
             }
 

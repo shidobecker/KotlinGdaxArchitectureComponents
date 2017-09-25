@@ -1,9 +1,11 @@
 package com.karchitecture.shido.karchitecture.datas.dao
 
+import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import com.karchitecture.shido.karchitecture.datas.model.DoneOrder
 import com.karchitecture.shido.karchitecture.datas.model.MatchOrder
 
 /**
@@ -11,6 +13,9 @@ import com.karchitecture.shido.karchitecture.datas.model.MatchOrder
  */
 @Dao
 interface MatchOrderDao {
+
+    @Query("SELECT * FROM MATCH_ORDERS ORDER BY SEQUENCE DESC")
+    fun loadMatchOrdersSync(): LiveData<List<MatchOrder>>
 
     @Query("SELECT * FROM MATCH_ORDERS ORDER BY PRICE DESC")
     fun getAll(): List<MatchOrder>
