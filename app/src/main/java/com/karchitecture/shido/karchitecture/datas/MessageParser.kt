@@ -1,11 +1,11 @@
-package com.karchitecture.shido.karchitecture
+package com.karchitecture.shido.karchitecture.datas
 
 import com.google.gson.GsonBuilder
 import com.karchitecture.shido.karchitecture.datas.model.*
+import com.karchitecture.shido.karchitecture.db
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import org.json.JSONObject
-import kotlin.concurrent.thread
 
 /**
  * Created by mira on 11/09/2017.

@@ -8,10 +8,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.karchitecture.shido.karchitecture.TradesAdapter
-import com.karchitecture.shido.karchitecture.Trade
-import com.karchitecture.shido.karchitecture.TradeHistoryViewModel
+import com.karchitecture.shido.karchitecture.adapters.TradesAdapter
+import com.karchitecture.shido.karchitecture.datas.Trade
 import com.karchitecture.shido.karchitecture.extensions.e
+import com.karchitecture.shido.karchitecture.viewmodel.TradeHistoryViewModel
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 
 /**
@@ -25,7 +25,7 @@ class TradeHistoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(TradeHistoryViewModel::class.java)
-        val myAdapter = TradesAdapter(context)
+        tradesAdapter = TradesAdapter(context)
         super.onCreate(savedInstanceState)
     }
 
@@ -36,7 +36,6 @@ class TradeHistoryFragment : Fragment() {
             adapter = tradesAdapter
             //RecyclerView is Observing this method which brings a list of LiveData MatchOrders that we can work with it
             viewModel.trades.observe(this@TradeHistoryFragment, Observer {
-                e(it)
                 //it == List<MatchOrder>
                 if (it != null) {
                     val trades: List<Trade> = it.map { Trade(it.size.toFloat(), it.price.toFloat(), it.time, (it.side == "buy")) }//Mapping to a collection of trades

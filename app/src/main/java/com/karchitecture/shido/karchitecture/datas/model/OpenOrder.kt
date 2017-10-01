@@ -15,10 +15,10 @@ data class OpenOrder(
     var type: String = "",
     var time: String = "",
     @SerializedName("remaining_size")
-    var remainingSize: String ="",
+    var remainingSize: Float =0f,
     var side: String = "",
     @SerializedName("order_id")
     var orderId: String ="",
-    var price: String  = ""){
+    var price: Float = 0f){
         @Ignore constructor() : this(0)
     }

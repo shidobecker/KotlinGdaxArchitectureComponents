@@ -1,4 +1,4 @@
-package com.karchitecture.shido.karchitecture
+package com.karchitecture.shido.karchitecture.datas
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase

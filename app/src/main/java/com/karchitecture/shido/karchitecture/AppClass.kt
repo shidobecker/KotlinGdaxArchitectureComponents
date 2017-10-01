@@ -2,6 +2,7 @@ package com.karchitecture.shido.karchitecture
 
 import android.app.Application
 import android.arch.persistence.room.Room
+import com.karchitecture.shido.karchitecture.datas.AppDatabase
 
 /**
  * Created by Shido on 01/10/2017.
