@@ -1,40 +1,39 @@
 package com.karchitecture.shido.karchitecture
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import android.view.Gravity
 import android.widget.Toolbar
 import com.karchitecture.shido.karchitecture.extensions.e
+import com.karchitecture.shido.karchitecture.view.TradeHistoryFragment
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
-import org.jetbrains.anko.recyclerview.v7.recyclerView
+import org.jetbrains.anko.support.v4.drawerLayout
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: TradeHistoryViewModel
 
     private var toolBar: Toolbar? = null
 
+    lateinit var drawer: DrawerLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TradeHistoryViewModel::class.java)
         buildLayout()
         lifecycle.addObserver(GdaxWebSocket()) //Adding a new Observer
     }
 
 
     fun buildLayout() {
-        val RECYCLER_VIEW_ID = 10
-        val myAdapter = MyAdapter(this)
+        val FRAMELAYOUT_ID = 133
+        drawer = drawerLayout {
 
         coordinatorLayout {
             backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.mainActivityBG)
@@ -42,39 +41,43 @@ class MainActivity : AppCompatActivity() {
 
             appBarLayout {
                 backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.appbar)
-                 toolBar = toolbar {
+                val toolbar = toolbar {
                     title = "GDAX"
                      setNavigationIcon(R.drawable.ic_menu_black_24dp)
                     setTitleTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
                     backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.mainActivityBG)
+
                 }.lparams(width = matchParent, height = dip(50))
                 this@MainActivity.setActionBar(toolBar)
-            }.lparams(width = matchParent)
-
-                recyclerView {
-                    isFocusableInTouchMode = true
-                    id = RECYCLER_VIEW_ID
-                    adapter = myAdapter
-                    //RecyclerView is Observing this method which brings a list of LiveData MatchOrders that we can work with it
-                    viewModel.trades.observe(this@MainActivity, Observer {
-                        e(it)
-                        //it == List<MatchOrder>
-                        if (it != null) {
-                            val trades: List<Trade> = it.map { Trade(it.size.toFloat(), it.price.toFloat(), it.time, (it.side == "buy")) }//Mapping to a collection of trades
-                            myAdapter.trades.clear()
-                            myAdapter.trades.addAll(trades)
-                            myAdapter.notifyDataSetChanged()
-                        }
-                    })
-                    layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                    layoutManager.isItemPrefetchEnabled = false //Scrolling caused crashes without it
-
-                }.lparams(matchParent, wrapContent) {
-                    bottomMargin = dip(20)
-                    behavior = AppBarLayout.ScrollingViewBehavior()
+                toolbar.setNavigationOnClickListener {
+                    drawer.openDrawer(Gravity.LEFT)
                 }
 
+            }.lparams(width = matchParent)
+
+            //Fragment
+            frameLayout{
+                id = FRAMELAYOUT_ID
+            }.lparams(width = matchParent, height = matchParent)
+
+
+
+
+            }.lparams(width = matchParent, height = matchParent)
+
+
+            //Drawer
+            val navDrawer = NavDrawer(this@MainActivity, {drawer.closeDrawers()})
+            navDrawer.lparams(width = dip(250), height = matchParent){
+                gravity = Gravity.START
             }
+            this.addView(navDrawer)
+        }
+
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragmentTransaction.add(FRAMELAYOUT_ID, TradeHistoryFragment())
+            fragmentTransaction.commit()
+
         }
 
 

@@ -18,7 +18,7 @@ import org.jetbrains.anko.textColor
 
 data class Trade(val size: Float, val price: Float, val time: String, val isBuy: Boolean)
 
-class MyAdapter (val context: Context) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class TradesAdapter(val context: Context) : RecyclerView.Adapter<TradesAdapter.ViewHolder>() {
 
     val trades = mutableListOf<Trade>()
 
