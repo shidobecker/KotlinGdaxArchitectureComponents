@@ -5,6 +5,8 @@
   <color name="colorAccent">#FF4081</color>
 
   <color name="mainActivityBG">#1e2b34</color>
+  <color name="appbar">#707478</color>
+  <color name="white">#eef2f4</color>
   <color name="recyclerBG">#867d80</color>
   <color name="green">#71d05c</color>
   <color name="red">#ff6939</color>

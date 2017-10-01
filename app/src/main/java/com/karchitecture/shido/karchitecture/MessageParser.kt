@@ -10,7 +10,7 @@ import kotlin.concurrent.thread
 /**
  * Created by mira on 11/09/2017.
  */
-class MessageParser(val db: AppDatabase) {
+class MessageParser {
     val gson = GsonBuilder().serializeNulls().create()
 
     fun readMessage(message: String) {
