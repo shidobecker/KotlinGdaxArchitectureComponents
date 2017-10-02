@@ -1,32 +1,34 @@
 package com.karchitecture.shido.karchitecture
 
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
-import com.github.kittinunf.result.getAs
+import org.json.JSONObject
 import org.junit.Test
 
 /**
  * Created by Shido on 01/10/2017.
  */
 class APITest {
-    val endpoint = "https://api.gdax.com"
+    val endpoint = "https://api.gdax.com/products/BTC-USD/book?level=2"
 
     @Test
     fun runTest(){
-        endpoint.httpGet().responseString{
-            request, response, result ->
-            println("$request $result $response")
-
-            when(result){
-                is Result.Failure ->{
-                    /*result.getAs<>()*/
-                }
-                is Result.Success ->{
-
-                }
-
+        val (request, response, result) = endpoint.httpGet().responseString()
+        // e("$request $result $response")
+        result.fold({ data ->
+            val json = JSONObject(data)
+            val sequence = json["sequence"]
+            val bids = json.getJSONArray("bids")
+            val asks = json.getJSONArray("asks")
+            println(sequence)
+            println(bids)
+            println(asks)
+            (0..asks.length()).map {
+                println(asks[it])
             }
-        }
-        assert(true)
+        },{ error ->
+            println(error)
+        })
     }
+
+
 }

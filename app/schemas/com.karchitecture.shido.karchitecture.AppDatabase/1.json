@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a6246da64965c4e14e2381fc9a7c4b7f",
+    "identityHash": "1a44a7556b41613f5555e59b204a1f7e",
     "entities": [
       {
         "tableName": "OPEN_ORDERS",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sequence` INTEGER NOT NULL, `type` TEXT NOT NULL, `time` TEXT NOT NULL, `remainingSize` TEXT NOT NULL, `side` TEXT NOT NULL, `orderId` TEXT NOT NULL, `price` TEXT NOT NULL, PRIMARY KEY(`sequence`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sequence` INTEGER NOT NULL, `type` TEXT NOT NULL, `time` TEXT NOT NULL, `remainingSize` REAL NOT NULL, `side` TEXT NOT NULL, `orderId` TEXT NOT NULL, `price` REAL NOT NULL, PRIMARY KEY(`sequence`))",
         "fields": [
           {
             "fieldPath": "sequence",
@@ -29,7 +29,7 @@
           {
             "fieldPath": "remainingSize",
             "columnName": "remainingSize",
-            "affinity": "TEXT",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -47,7 +47,7 @@
           {
             "fieldPath": "price",
             "columnName": "price",
-            "affinity": "TEXT",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
@@ -311,7 +311,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a6246da64965c4e14e2381fc9a7c4b7f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1a44a7556b41613f5555e59b204a1f7e\")"
     ]
   }
 }

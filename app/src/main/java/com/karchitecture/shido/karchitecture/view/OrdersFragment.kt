@@ -31,7 +31,7 @@ class OrdersFragment: Fragment() {
             adapter = openAdapter
             viewModel.orders.observe(this@OrdersFragment, Observer {
                 if (it != null) {
-                    val opens = it.map { Order(it.side == "buy", it.remainingSize, it.price) }
+                    val opens = it.map { Order(it.side == "buy", it.remainingSize, it.price, it.orderId) }
                     val bids = opens.filter{it.isABid}.sortedByDescending { it.price }
                     val asks = opens.filter { !it.isABid }.sortedBy { it.price }
                     val list = mutableListOf<Order>()

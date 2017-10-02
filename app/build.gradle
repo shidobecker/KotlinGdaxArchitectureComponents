@@ -48,9 +48,10 @@ dependencies {
     compile 'org.jetbrains.anko:anko:0.10.1'
 
     //Fuel
-    compile 'com.github.kittinunf.fuel:fuel-android:1.10.0' //for Android
+    //compile 'com.github.kittinunf.fuel:fuel-android:1.10.0' //for Android
     compile 'com.github.kittinunf.fuel:fuel-livedata:1.10.0' //for LiveData support
     compile 'com.github.kittinunf.fuel:fuel-gson:1.10.0' //for Gson support
+    compile 'com.github.kittinunf.fuel:fuel:1.10.0'
 
     // Appcompat-v7 (Anko Layouts)
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
@@ -89,8 +90,8 @@ dependencies {
     implementation "android.arch.lifecycle:common-java8:1.0.0-beta1"
     implementation "android.arch.paging:runtime:1.0.0-alpha2"
 
-    compile 'com.google.code.gson:gson:2.8.1'
-
+    testCompile 'org.json:json:20160810' //To make JSON unit test
+    compile 'com.googlecode.json-simple:json-simple:1.1'
 
     implementation 'com.android.support:recyclerview-v7:26.0.2'
 }

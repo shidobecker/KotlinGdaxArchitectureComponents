@@ -8,7 +8,6 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.Toolbar
-import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.karchitecture.shido.karchitecture.R
@@ -21,6 +20,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.support.v4.drawerLayout
+import org.json.JSONObject
 import kotlin.concurrent.thread
 
 
@@ -31,38 +31,11 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var drawer: DrawerLayout
     lateinit var toolBar: Toolbar
-    val endpoint = "https://api.gdax.com/products/BTC-USD/book?level=2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         buildLayout()
         lifecycle.addObserver(GdaxWebSocket()) //Adding a new Observer
-        end()
-    }
-
-    fun end(){
-        endpoint.httpGet().responseJson{
-            request, response, result ->
-           // e("$request $result $response")
-            result.fold({ data ->
-                val json = data.obj()
-                val sequence = json["sequence"]
-                val bids = json.getJSONArray("bids")
-                val asks = json.getJSONArray("asks")
-                e(sequence)
-                e(bids)
-                e(asks)
-            },{ error ->
-                e(error)
-            })
-            when(result){
-                is Result.Failure ->{
-                    /*result.getAs<>()*/
-                }
-                is Result.Success ->{
-                }
-            }
-        }
     }
 
     fun buildLayout() {
