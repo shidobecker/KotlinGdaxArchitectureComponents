@@ -23,8 +23,14 @@ interface OpenOrdersDao {
     @Insert
     fun insert(event: OpenOrder)
 
+    @Insert
+    fun insert(events: List<OpenOrder>)
+
     @Delete
     fun delete(events: List<OpenOrder>)
+
+    @Query("SELECT * FROM OPEN_ORDERS WHERE SIDE = \"buy\" ORDER BY PRICE DESC ")
+    fun getBestBuy(): List<OpenOrder>
 
 
 }

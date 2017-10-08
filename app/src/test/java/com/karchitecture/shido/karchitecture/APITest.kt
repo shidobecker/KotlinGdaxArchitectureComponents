@@ -19,11 +19,12 @@ class APITest {
             val sequence = json["sequence"]
             val bids = json.getJSONArray("bids")
             val asks = json.getJSONArray("asks")
-            println(sequence)
-            println(bids)
-            println(asks)
+           // println(sequence)
+           // println(bids)
+           // println(asks)
             (0..asks.length()).map {
-                println(asks[it])
+                println(asks.getJSONArray(it)[0])
+               // println(asks[it])
             }
         },{ error ->
             println(error)

@@ -11,8 +11,6 @@ import com.karchitecture.shido.karchitecture.db
  * Created by Shido on 01/10/2017.
  */
 class OrdersViewModel(ctx: Application) : AndroidViewModel(ctx) {
-
-
     val orders: LiveData<List<OpenOrder>> = MutableLiveData<List<OpenOrder>>()
     get() {
         if(field.value == null){ //Using when the device changes to landscape

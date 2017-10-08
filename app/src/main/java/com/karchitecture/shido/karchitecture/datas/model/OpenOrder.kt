@@ -10,14 +10,14 @@ import com.google.gson.annotations.SerializedName
  */
 @Entity(tableName = "OPEN_ORDERS")
 data class OpenOrder(
-    @PrimaryKey(autoGenerate = false)
-    var sequence: Int = 0,
+    var sequence: Long = 0,
     var type: String = "",
     var time: String = "",
     @SerializedName("remaining_size")
     var remainingSize: Float =0f,
     var side: String = "",
     @SerializedName("order_id")
+    @PrimaryKey(autoGenerate = false)
     var orderId: String ="",
     var price: Float = 0f){
         @Ignore constructor() : this(0)

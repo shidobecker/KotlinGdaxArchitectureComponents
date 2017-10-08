@@ -35,7 +35,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         buildLayout()
+
         lifecycle.addObserver(GdaxWebSocket()) //Adding a new Observer
+
+        async(CommonPool){db.openOrderDao().getBestBuy().forEach {
+            e("BEST BUY $it")
+        }}
+
     }
 
     fun buildLayout() {

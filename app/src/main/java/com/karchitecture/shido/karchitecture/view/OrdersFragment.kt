@@ -37,6 +37,7 @@ class OrdersFragment: Fragment() {
                     val list = mutableListOf<Order>()
                     list.addAll(asks)
                     list.addAll(bids)
+
                     openAdapter.openOrders.clear()
                     openAdapter.openOrders.addAll(list)
                     openAdapter.notifyDataSetChanged()
