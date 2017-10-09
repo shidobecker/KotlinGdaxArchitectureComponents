@@ -38,9 +38,15 @@ class MainActivity : AppCompatActivity() {
 
         lifecycle.addObserver(GdaxWebSocket()) //Adding a new Observer
 
-        async(CommonPool){db.openOrderDao().getBestBuy().forEach {
-            e("BEST BUY $it")
-        }}
+        /*async(CommonPool){
+            while(true){
+            val bids =db.openOrderDao().getBids()
+                e("SIZE ${bids.size},  Best buy: ${bids[0]}")
+            val asks = db.openOrderDao().getAsks()
+                e("SIZE: ${asks.size}, Best Asks: ${asks[0]}")
+            }
+
+        }*/
 
     }
 
@@ -109,17 +115,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun deleteRoom() {
-        //Deleting all data before
-        thread {
-            db.openOrderDao().delete(db.openOrderDao().getAll())
-            db.receivedOrderDao().delete(db.receivedOrderDao().getAll())
-            db.matchOrderDao().delete(db.matchOrderDao().getAll())
-            db.doneOrderDao().delete(db.doneOrderDao().getAll())
-            db.changeOrderDao().delete(db.changeOrderDao().getAll())
 
-        }
-    }
 
     fun logDatabase() {
         //Database access can't be in main thread since it may potentially lock the UI for a long period of time.

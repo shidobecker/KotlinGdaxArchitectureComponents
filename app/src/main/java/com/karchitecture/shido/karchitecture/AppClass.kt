@@ -8,11 +8,12 @@ import com.karchitecture.shido.karchitecture.datas.model.OpenOrder
 import com.karchitecture.shido.karchitecture.extensions.e
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.concurrent.thread
 
 /**
  * Created by Shido on 01/10/2017.
  */
-val db by lazy { //Only set this value when somone uses this, and then evaluates this statement
+val db by lazy { //Only set this value when someone uses this, and then evaluates this statement
     AppClass.tempTB!!
 }
 
@@ -24,6 +25,7 @@ class AppClass: Application() {
     }
     override fun onCreate() {
         tempTB = Room.databaseBuilder(this, AppDatabase::class.java, "GDAX").build()
+        deleteRoom()
         downloadOrderBook()
         super.onCreate()
     }
@@ -70,5 +72,15 @@ class AppClass: Application() {
         db.openOrderDao().insert(openOrders)
     }
 
+    fun deleteRoom() {
+        //Deleting all data before
+        thread {
+            db.openOrderDao().delete(db.openOrderDao().getAll())
+            db.receivedOrderDao().delete(db.receivedOrderDao().getAll())
+            db.matchOrderDao().delete(db.matchOrderDao().getAll())
+            db.doneOrderDao().delete(db.doneOrderDao().getAll())
+            db.changeOrderDao().delete(db.changeOrderDao().getAll())
 
+        }
+    }
 }

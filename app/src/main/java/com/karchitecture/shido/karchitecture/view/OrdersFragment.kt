@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.karchitecture.shido.karchitecture.adapters.OpenOrderAdapter
 import com.karchitecture.shido.karchitecture.datas.Order
+import com.karchitecture.shido.karchitecture.datas.model.PriceSideTuple
 import com.karchitecture.shido.karchitecture.viewmodel.OrdersViewModel
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 
@@ -29,12 +30,12 @@ class OrdersFragment: Fragment() {
         return context.recyclerView {
             val openAdapter = OpenOrderAdapter(context)
             adapter = openAdapter
-            viewModel.orders.observe(this@OrdersFragment, Observer {
-                if (it != null) {
-                    val opens = it.map { Order(it.side == "buy", it.remainingSize, it.price, it.orderId) }
-                    val bids = opens.filter{it.isABid}.sortedByDescending { it.price }
-                    val asks = opens.filter { !it.isABid }.sortedBy { it.price }
-                    val list = mutableListOf<Order>()
+            viewModel.orders.observe(this@OrdersFragment, Observer { priceSideTuple ->
+                if (priceSideTuple != null) { //It= List<PriceSideTuple>
+
+                    val bids = priceSideTuple.filter{it.side.equals("buy")}.sortedByDescending { it.price }.take(10)
+                    val asks = priceSideTuple.filter {it.side.equals("sell") }.sortedBy { it.price }.take(10)
+                    val list = mutableListOf<PriceSideTuple>()
                     list.addAll(asks)
                     list.addAll(bids)
 

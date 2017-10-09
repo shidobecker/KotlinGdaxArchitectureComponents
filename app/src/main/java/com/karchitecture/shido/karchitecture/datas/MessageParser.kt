@@ -57,6 +57,20 @@ class MessageParser {
         val matchOrder = gson.fromJson(message, MatchOrder::class.java)
         db.matchOrderDao().insert(matchOrder)
 
+        with(db.openOrderDao()){
+            val makerOrder: OpenOrder? = getOrder(matchOrder.makerOrderId)
+            val takerOrder: OpenOrder? = getOrder(matchOrder.takerOrderId)
+
+            makerOrder?.let {
+                it.remainingSize -= matchOrder.size.toFloat()
+                updateOrder(makerOrder)
+
+            }
+            takerOrder?.let {
+                it.remainingSize -= matchOrder.size.toFloat()
+                updateOrder(takerOrder)
+            }
+        }
         return matchOrder
     }
 
@@ -64,6 +78,7 @@ class MessageParser {
         val doneOrder = gson.fromJson(message, DoneOrder::class.java)
             db.doneOrderDao().insert(doneOrder)
 
+        db.openOrderDao().delete(OpenOrder(orderId = doneOrder.orderId))
         return doneOrder
     }
 
