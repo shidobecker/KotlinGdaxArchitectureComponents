@@ -2,6 +2,7 @@ package com.karchitecture.shido.karchitecture.view
 
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
@@ -18,7 +19,9 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
+import org.jetbrains.anko.design.bottomNavigationView
 import org.jetbrains.anko.design.coordinatorLayout
+import org.jetbrains.anko.design.tabItem
 import org.jetbrains.anko.support.v4.drawerLayout
 import org.json.JSONObject
 import kotlin.concurrent.thread
@@ -29,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 
     val FRAMELAYOUT_ID = 133
 
-    lateinit var drawer: DrawerLayout
     lateinit var toolBar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycle.addObserver(GdaxWebSocket()) //Adding a new Observer
 
-        /*async(CommonPool){
+        /*  async(CommonPool){
             while(true){
             val bids =db.openOrderDao().getBids()
                 e("SIZE ${bids.size},  Best buy: ${bids[0]}")
@@ -46,12 +48,85 @@ class MainActivity : AppCompatActivity() {
                 e("SIZE: ${asks.size}, Best Asks: ${asks[0]}")
             }
 
-        }*/
-
+        }
+*/
     }
 
     fun buildLayout() {
-        drawer = drawerLayout {
+            coordinatorLayout {
+                backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.mainActivityBG)
+                fitsSystemWindows = true
+
+                appBarLayout {
+                    val actionBarHeight = context.theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
+                    backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.appbar)
+
+                    toolBar = toolbar {
+                        title = "GDAX"
+                        setTitleTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
+                        backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.mainActivityBG)
+
+                    }.lparams(width = matchParent, height = dip(50)) {
+                        scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                                AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+                    }
+
+                }.lparams(width = matchParent)
+
+                //Main Fragment
+                frameLayout {
+                    id = FRAMELAYOUT_ID
+                }.lparams(width = matchParent, height = matchParent) {
+                    behavior = AppBarLayout.ScrollingViewBehavior()
+                }
+
+                //Bottom navigation view
+                val bottomNav = include<BottomNavigationView>(R.layout.bottom_nav) {
+                    setOnNavigationItemSelectedListener {
+                        when(it.itemId){
+                            R.id.nav_open_orders -> switchFragments(bottomNavItems[0])
+                            R.id.nav_open_trade -> switchFragments(bottomNavItems[1])
+                            R.id.nav_chart -> switchFragments(bottomNavItems[2])
+                        }
+                        true
+                    }
+
+                }.lparams {
+                    gravity = Gravity.BOTTOM
+                }
+
+
+            }
+
+
+        switchFragments(bottomNavItems[0])
+
+    }
+
+
+
+
+
+/*    fun switchFragments(entry: NavDrawerEntry) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(FRAMELAYOUT_ID, entry.fragment)
+        fragmentTransaction.commit()
+        toolBar.title = entry.title
+        invalidateOptionsMenu()
+    }*/
+    fun switchFragments(entry: BottomNavEntry) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(FRAMELAYOUT_ID, entry.fragment)
+        fragmentTransaction.commit()
+        toolBar.title = entry.title
+        invalidateOptionsMenu()
+    }
+
+
+    fun buildDrawerLayout(){
+        //lateinit var drawer: DrawerLayout
+
+        /*drawer = drawerLayout {
 
             coordinatorLayout {
                 backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.mainActivityBG)
@@ -60,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                 appBarLayout {
                     val actionBarHeight = context.theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
                     backgroundColor = ContextCompat.getColor(this@MainActivity, R.color.appbar)
+
                     toolBar = toolbar {
                         title = "GDAX"
                         setNavigationIcon(R.drawable.ic_menu_black_24dp)
@@ -78,13 +154,16 @@ class MainActivity : AppCompatActivity() {
 
                 }.lparams(width = matchParent)
 
-                //Fragment
+                //Main Fragment
                 frameLayout {
                     id = FRAMELAYOUT_ID
                 }.lparams(width = matchParent, height = matchParent) {
                     behavior = AppBarLayout.ScrollingViewBehavior()
                 }
 
+                val bottomNav = include<BottomNavigationView>(R.layout.bottom_nav).lparams{
+                    gravity = Gravity.BOTTOM
+                }
 
             }.lparams(width = matchParent, height = matchParent)
 
@@ -92,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             //Drawer
             val navDrawer = NavDrawer(this@MainActivity, action = { navEntry ->
                 drawer.closeDrawers()
-                switchFragments(navEntry)
+                //switchFragments(navEntry)
             }
             )
             navDrawer.lparams(width = dip(250), height = matchParent) {
@@ -100,33 +179,10 @@ class MainActivity : AppCompatActivity() {
             }
             this.addView(navDrawer)
         }
-        switchFragments(items[0])
-
-
+        switchFragments(bottomNavItems[0])
+*/
     }
 
-
-    fun switchFragments(entry: NavDrawerEntry) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(FRAMELAYOUT_ID, entry.fragment)
-        fragmentTransaction.commit()
-        toolBar.title = entry.title
-        invalidateOptionsMenu()
-    }
-
-
-
-
-    fun logDatabase() {
-        //Database access can't be in main thread since it may potentially lock the UI for a long period of time.
-        async(CommonPool) {
-            db.changeOrderDao().getAll().forEach { e(it) }
-            db.receivedOrderDao().getAll().forEach { e(it) }
-            db.matchOrderDao().getAll().forEach { e(it) }
-            db.openOrderDao().getAll().forEach { e(it) }
-            db.doneOrderDao().getAll().forEach { e(it) }
-        }
-    }
 
 
     override fun onDestroy() {

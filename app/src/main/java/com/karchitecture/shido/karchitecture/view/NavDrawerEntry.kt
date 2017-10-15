@@ -5,4 +5,4 @@ import android.support.v4.app.Fragment
 /**
  * Created by Shido on 01/10/2017.
  */
-data class NavDrawerEntry(val title: String, val fragment: Fragment)
+data class NavDrawerEntry(val title: String, val fragment: Fragment) //Items of navigation drawer

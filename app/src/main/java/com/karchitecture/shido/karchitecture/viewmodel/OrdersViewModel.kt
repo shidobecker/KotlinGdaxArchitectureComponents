@@ -4,9 +4,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.karchitecture.shido.karchitecture.datas.model.OpenOrder
 import com.karchitecture.shido.karchitecture.datas.model.PriceSideTuple
-import com.karchitecture.shido.karchitecture.datas.model.PriceTuple
 import com.karchitecture.shido.karchitecture.db
 
 /**

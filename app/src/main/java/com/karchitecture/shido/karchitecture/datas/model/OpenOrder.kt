@@ -14,7 +14,7 @@ data class OpenOrder(
     var type: String = "",
     var time: String = "",
     @SerializedName("remaining_size")
-    var remainingSize: Float =0f,
+    var remainingSize: Double = 0.0,
     var side: String = "",
     @SerializedName("order_id")
     @PrimaryKey(autoGenerate = false)

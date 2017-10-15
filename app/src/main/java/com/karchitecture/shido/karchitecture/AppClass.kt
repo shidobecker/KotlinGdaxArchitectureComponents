@@ -6,14 +6,16 @@ import com.github.kittinunf.fuel.httpGet
 import com.karchitecture.shido.karchitecture.datas.AppDatabase
 import com.karchitecture.shido.karchitecture.datas.model.OpenOrder
 import com.karchitecture.shido.karchitecture.extensions.e
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.concurrent.thread
 
 /**
  * Created by Shido on 01/10/2017.
  */
 val db by lazy { //Only set this value when someone uses this, and then evaluates this statement
+    //Only one db instance per app
     AppClass.tempTB!!
 }
 
@@ -30,7 +32,7 @@ class AppClass: Application() {
         super.onCreate()
     }
 
-    fun downloadOrderBook(){
+    fun downloadOrderBook(){ //Call only when application starts
         e("download order book")
         endpoint.httpGet().responseString { request, response, result ->
             result.fold({
@@ -44,18 +46,6 @@ class AppClass: Application() {
 
             }, {error -> e(error)})
         }
-      /*  result.fold({ data ->
-            val json = JSONObject(data)
-            val sequence = json["sequence"] as Int
-            val bids = json.getJSONArray("bids")
-            val asks = json.getJSONArray("asks")
-
-            addOpenOrders(sequence, bids)
-            addOpenOrders(sequence, asks)
-
-
-        },{ error -> e(error) })
-        }*/
     }
 
     private fun addOpenOrders(side: String, sequence: Long, orders: JSONArray){
@@ -66,7 +56,7 @@ class AppClass: Application() {
             val size = orders.getJSONArray(it)[1] as String
             val order_id = orders.getJSONArray(it)[2] as String
 
-            val event = OpenOrder(sequence, "open", order_id, price.toFloat(), size, side )
+            val event = OpenOrder(sequence, "open", order_id, price.toDouble(), size, side )
             openOrders.add(event)
         }
         db.openOrderDao().insert(openOrders)
@@ -74,7 +64,7 @@ class AppClass: Application() {
 
     fun deleteRoom() {
         //Deleting all data before
-        thread {
+        async(CommonPool) {
             db.openOrderDao().delete(db.openOrderDao().getAll())
             db.receivedOrderDao().delete(db.receivedOrderDao().getAll())
             db.matchOrderDao().delete(db.matchOrderDao().getAll())

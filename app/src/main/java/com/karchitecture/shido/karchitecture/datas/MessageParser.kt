@@ -3,6 +3,7 @@ package com.karchitecture.shido.karchitecture.datas
 import com.google.gson.GsonBuilder
 import com.karchitecture.shido.karchitecture.datas.model.*
 import com.karchitecture.shido.karchitecture.db
+import com.karchitecture.shido.karchitecture.extensions.e
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import org.json.JSONObject
@@ -61,6 +62,8 @@ class MessageParser {
             val makerOrder: OpenOrder? = getOrder(matchOrder.makerOrderId)
             val takerOrder: OpenOrder? = getOrder(matchOrder.takerOrderId)
 
+            e("MATCHED ORDER $matchOrder" )
+            //Update the open order with that maker or taker order id
             makerOrder?.let {
                 it.remainingSize -= matchOrder.size.toFloat()
                 updateOrder(makerOrder)
@@ -85,6 +88,14 @@ class MessageParser {
     fun buildAndInsertChangeOrder(message: String): ChangeOrder {
         val changeOrder = gson.fromJson(message, ChangeOrder::class.java)
         db.changeOrderDao().insert(changeOrder)
+
+        with(db.openOrderDao()){ //Update when new change order comes in
+            val chOrder: OpenOrder? = getOrder(changeOrder.orderId)
+            chOrder?.let {
+                chOrder.remainingSize = changeOrder.newSize.toDouble()
+                db.openOrderDao().updateOrder(chOrder)
+            }
+        }
 
         return changeOrder
     }

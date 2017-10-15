@@ -10,11 +10,12 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 /**
  * Created by Shido on 01/10/2017.
  */
-val items = arrayOf(NavDrawerEntry("Trade History", TradeHistoryFragment()),
-        NavDrawerEntry("Order Book", OrdersFragment()),
-        NavDrawerEntry("Charts", ChartFragment()))
+val bottomNavItems = arrayOf(
+        BottomNavEntry("Order Book", OrdersFragment()),
+        BottomNavEntry("Trade History", TradeHistoryFragment()),
+        BottomNavEntry("Charts", ChartFragment()))
 
-class NavDrawer(context: Context, action: (navEntry: NavDrawerEntry) -> Unit): LinearLayout(context) { //Navigation drawer with anko
+class BottomNavView(context: Context, action: (navEntry: NavDrawerEntry) -> Unit): LinearLayout(context) { //Navigation drawer with anko
 
     init{
         orientation = VERTICAL
