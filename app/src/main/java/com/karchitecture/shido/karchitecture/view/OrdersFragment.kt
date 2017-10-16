@@ -33,8 +33,8 @@ class OrdersFragment: Fragment() {
             viewModel.orders.observe(this@OrdersFragment, Observer { priceSideTuple ->
                 if (priceSideTuple != null) { //It= List<PriceSideTuple>
 
-                    val bids = priceSideTuple.filter{it.side.equals("buy")}.sortedByDescending { it.price }.take(10) //Take only first 10 elements
-                    val asks = priceSideTuple.filter {it.side.equals("sell") }.sortedBy { it.price }.take(10)
+                    val bids = priceSideTuple.filter{it.side.equals("buy")}.sortedByDescending { it.price }.take(100) //Take only first 10 elements
+                    val asks = priceSideTuple.filter {it.side.equals("sell") }.sortedBy { it.price }.take(100)
                     val list = mutableListOf<PriceSideTuple>()
                     list.addAll(asks.reversed())//The lowest asks at the bottom of the list
                     list.addAll(bids)

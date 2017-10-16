@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
         <item android:id="@+id/nav_open_orders"
             android:title="Open Orders"
-            android:icon="@drawable/openorders" />
+            android:icon="@drawable/ic_storage_black_24dp" />
         <item android:id="@+id/nav_open_trade"
             android:title="Trade History"
-            android:icon="@drawable/trade" />
+            android:icon="@drawable/ic_history_black_24dp" />
         <item android:id="@+id/nav_chart"
             android:title="Price Chart"
-            android:icon="@drawable/chart" />
+            android:icon="@drawable/ic_show_chart_black_24dp" />
 </menu>
