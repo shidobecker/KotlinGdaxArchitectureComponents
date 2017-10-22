@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                         true
                     }
 
-                }.lparams {
+                }.lparams(width = matchParent) {
                     gravity = Gravity.BOTTOM
                 }
 

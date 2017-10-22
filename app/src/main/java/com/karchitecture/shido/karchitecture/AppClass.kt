@@ -51,7 +51,7 @@ class AppClass: Application() {
     private fun addOpenOrders(side: String, sequence: Long, orders: JSONArray){
         val openOrders: MutableList<OpenOrder> = mutableListOf()
         (0..orders.length()-1).map {
-            e(orders[it])
+            //e(orders[it])
             val price = orders.getJSONArray(it)[0] as String
             val size = orders.getJSONArray(it)[1] as String
             val order_id = orders.getJSONArray(it)[2] as String
