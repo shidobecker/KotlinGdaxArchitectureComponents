@@ -44,7 +44,7 @@ class ChartFragment: Fragment() {
         }
     }
 
-
+//
     fun buildErrorLayout(): View{
         return context.relativeLayout {
             textView{
